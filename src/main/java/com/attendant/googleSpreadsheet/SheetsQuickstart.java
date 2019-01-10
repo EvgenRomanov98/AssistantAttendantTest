@@ -21,6 +21,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
+
 public class SheetsQuickstart {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -58,11 +59,11 @@ public class SheetsQuickstart {
      * Prints the names and majors of students in a sample spreadsheet:
      * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
      */
-    public static void main(String... args) throws IOException, GeneralSecurityException {
+    public static List<List<Object>> infoAttendantGoogleSpreadsheet() throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final String spreadsheetId = "1emj4PwGeoEhagVu9YlydMjwgLyxtbf8N5wa7Ai7Z7PQ";
-        final String range = "Database!A2:I";
+        final String range = "Database!A2:S";
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -72,12 +73,14 @@ public class SheetsQuickstart {
         List<List<Object>> values = response.getValues();
         if (values == null || values.isEmpty()) {
             System.out.println("No data found.");
+            return null;
         } else {
             System.out.println("Name, Major");
-            for (List row : values) {
+            /*for (List row : values) {
                 // Print columns A and E, which correspond to indices 0 and 4.
                 System.out.printf("%s, %s\n", row.get(0), row.get(1));
-            }
+            }*/
+            return values;
         }
     }
 }

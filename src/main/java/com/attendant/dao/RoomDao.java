@@ -1,4 +1,4 @@
 package com.attendant.dao;
 
-public class HumanService {
+public class RoomDao {
 }
