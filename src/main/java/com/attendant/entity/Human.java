@@ -5,10 +5,7 @@ import lombok.Data;
 
 
 @Data
-//@Entity
 public class Human {
-
-    private String numberPhone;
-    private String name;
+    private long chatId;
     private Room room;
 }
