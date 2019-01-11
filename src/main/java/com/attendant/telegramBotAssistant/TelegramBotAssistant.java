@@ -1,11 +1,14 @@
 package com.attendant.telegramBotAssistant;
 
 import com.attendant.googleSpreadsheet.SheetsQuickstart;
+import com.attendant.utils.MyUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+
+import java.text.ParseException;
 import java.util.List;
 
 public class TelegramBotAssistant extends TelegramLongPollingBot {
@@ -20,6 +23,8 @@ public class TelegramBotAssistant extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         //setButtons(sendMessage);
         List<List<Object>> values = null;
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(chatId);
         try {
             values = SheetsQuickstart.infoAttendantGoogleSpreadsheet();
         } catch (Exception e) {
@@ -28,16 +33,21 @@ public class TelegramBotAssistant extends TelegramLongPollingBot {
         }
         if (values != null) {
             for (List row : values) {
-                ///////////////////////////////////////////////////////////////////////// тут
+                for (int i = 0; i < row.size(); i++) {
+                    if (s.equals(row.get(i).toString())) { // если переданая в сообщении комната равна комнате в БД из Гугл таблиц
+                        String dateAttendant = row.get(i + 1).toString();// то достанем дату дежурства, а это соседняя колонка
+
+                        try {
+                            if (!MyUtils.thisDateAlreadyPassed(dateAttendant)) { // прошла ли дата дежурства
+                                sendMessage.setText(dateAttendant);
+                                execute(sendMessage);
+                            }
+                        } catch (ParseException | TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
-        }
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(chatId);
-        sendMessage.setText("Hello");
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
         }
     }
 
