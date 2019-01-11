@@ -19,12 +19,16 @@ public class TelegramBotAssistant extends TelegramLongPollingBot {
     }
 
 
-    public synchronized void sendMsg(String chatId, String s) {
+    private synchronized void sendMsg(String chatId, String s) {
         SendMessage sendMessage = new SendMessage();
         //setButtons(sendMessage);
-        List<List<Object>> values = null;
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(chatId);
+
+        if(s.equals("/start")){
+            sendFirstMsg(sendMessage);
+        }
+        List<List<Object>> values = null;
         try {
             values = SheetsQuickstart.infoAttendantGoogleSpreadsheet();
         } catch (Exception e) {
@@ -93,5 +97,17 @@ public class TelegramBotAssistant extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return "701533339:AAGZpsNPVAblKnbq_kxkYOcTMX3F4gJKlSg";
+    }
+
+    public void sendFirstMsg(SendMessage sendMessage){
+
+        sendMessage.setText("Привет! напиши номер комнаты, дату дежурства которой хочешь узнать");
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
     }
 }
